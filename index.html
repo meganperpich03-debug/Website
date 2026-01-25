@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Alex Carter | Strategic Thinking</title>
+    <title>Megan Perpich | Human-Centered Campaigns</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -21,10 +21,53 @@
               serif: ['"Libre Baskerville"', 'Georgia', 'serif'],
               sans: ['"Inter"', 'sans-serif'],
             },
+            keyframes: {
+              'fade-up': {
+                '0%': { opacity: '0', transform: 'translateY(20px)' },
+                '100%': { opacity: '1', transform: 'translateY(0)' },
+              },
+              'draw-line': {
+                '0%': { width: '0' },
+                '100%': { width: '100%' },
+              }
+            },
+            animation: {
+              'fade-up': 'fade-up 0.8s cubic-bezier(0.21, 0.45, 0.32, 0.9) forwards',
+              'draw-line': 'draw-line 1.2s cubic-bezier(0.65, 0, 0.35, 1) forwards',
+            }
           },
         },
       }
     </script>
+    <style>
+      .reveal {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 1s cubic-bezier(0.21, 0.45, 0.32, 0.9), transform 1s cubic-bezier(0.21, 0.45, 0.32, 0.9);
+      }
+      .reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .delay-100 { transition-delay: 100ms; }
+      .delay-200 { transition-delay: 200ms; }
+      .delay-300 { transition-delay: 300ms; }
+      .delay-400 { transition-delay: 400ms; }
+      
+      /* Image reveal effect */
+      .img-reveal {
+        clip-path: inset(0 100% 0 0);
+        transition: clip-path 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+      }
+      .img-reveal.visible {
+        clip-path: inset(0 0 0 0);
+      }
+      
+      /* Smooth scroll behavior */
+      html {
+        scroll-behavior: smooth;
+      }
+    </style>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -40,7 +83,7 @@
 </script>
 <link rel="stylesheet" href="/index.css">
 </head>
-  <body class="bg-background text-charcoal antialiased">
+  <body class="bg-background text-charcoal antialiased overflow-x-hidden">
     <div id="root"></div>
   <script type="module" src="/index.tsx"></script>
 </body>
