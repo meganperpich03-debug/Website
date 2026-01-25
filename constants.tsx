@@ -4,7 +4,7 @@ export const PROFILE = {
   title: "Marketer",
   bio: "I am a strategic Marketer focused on bridging the gap between innovative technology and human emotion. With over a decade of experience in growth marketing, brand strategy, and digital transformation, I specialize in crafting narratives that resonate and drive measurable impact.",
   approach: "My approach combines data-driven insights with a keen eye for aesthetic excellence, ensuring every campaign not only reaches its audience but leaves a lasting impression. I believe that in an increasingly automated world, the most successful brands are those that remain unapologetically human.",
-  email: "hello@meganperpich.com",
+  email: "megan.perpich03@gmail.com",
   socials: [
     { name: "LinkedIn", url: "#" },
     { name: "Twitter", url: "#" },

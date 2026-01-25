@@ -34,6 +34,34 @@ const App: React.FC = () => {
   const [revealCount, setRevealCount] = useState(0);
   const servicesHeaderRef = useRef<HTMLHeadingElement>(null);
   const servicesText = "Services";
+  const workText = "Featured Work";
+  const [activeWorkId, setActiveWorkId] = useState<string | null>(null);
+  const workItems = [
+    {
+      id: "01",
+      title: "A Minerva Convening",
+      description: "A concise summary of the challenge, the creative approach, and the measurable impact.",
+      tag: "Event Management",
+      image:
+        "https://images.unsplash.com/photo-1503428593586-e225b39bddfe?q=80&w=1600&auto=format&fit=crop"
+    },
+    {
+      id: "02",
+      title: "Inside Voices X",
+      description: "Highlight a key outcome, a standout collaboration, and the result that mattered most.",
+      tag: "Event Management",
+      image:
+        "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=1600&auto=format&fit=crop"
+    },
+    {
+      id: "03",
+      title: "President Cold Outreach Campaign",
+      description: "Showcase the problem solved, the audience reached, and the transformation delivered.",
+      tag: "Business Development",
+      image:
+        "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1600&auto=format&fit=crop"
+    }
+  ];
 
   // Intro Sequence Effect
   useEffect(() => {
@@ -119,6 +147,18 @@ const App: React.FC = () => {
     return () => clearTimeout(timer);
   }, [typedTitle, isDeleting, titleIndex, typingSpeed, titles, showContent]);
 
+  useEffect(() => {
+    if (activeWorkId) {
+      const previousOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = previousOverflow;
+      };
+    }
+  }, [activeWorkId]);
+
+  const activeWork = workItems.find((item) => item.id === activeWorkId);
+
   const toggleStep = (number: string) => {
     setOpenSteps(prev => 
       prev.includes(number) 
@@ -128,7 +168,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className={`min-h-screen bg-white selection:bg-black selection:text-white flex flex-col font-light overflow-x-hidden relative ${!introFinished ? 'h-screen overflow-hidden' : ''}`}>
+    <div className={`min-h-screen bg-[#FDFDFD] selection:bg-black selection:text-white flex flex-col font-light overflow-x-hidden relative ${!introFinished ? 'h-screen overflow-hidden' : ''}`}>
       
       {/* Intro Preloader Overlay - Completely unmounts after animation */}
       {!preloaderGone && (
@@ -143,8 +183,6 @@ const App: React.FC = () => {
             </p>
           </div>
           
-          {/* Subtle curve effect on bottom */}
-          <div className="absolute bottom-0 left-0 right-0 h-[20vh] bg-[#101010] translate-y-full rounded-[50%_50%_0_0] scale-x-[1.5]"></div>
         </div>
       )}
 
@@ -168,10 +206,10 @@ const App: React.FC = () => {
           <header className="flex justify-end items-center mb-12 md:mb-20">
             <nav className="flex items-center gap-6 md:gap-10">
               <ul className="hidden md:flex items-center gap-8">
-                {['About', 'Services', 'Contact'].map((item) => (
+                {['About', 'Services', 'Featured Work'].map((item) => (
                   <li key={item}>
                     <a 
-                      href={`#${item.toLowerCase()}`} 
+                      href={`#${item.toLowerCase().replace(' ', '-')}`} 
                       className="text-[10px] font-bold tracking-[0.2em] uppercase text-zinc-400 hover:text-black transition-colors"
                     >
                       {item}
@@ -180,7 +218,7 @@ const App: React.FC = () => {
                 ))}
               </ul>
               <a 
-                href="https://linkedin.com" 
+                href="https://www.linkedin.com/in/megan-perpich-5b85b8173/" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-black hover:text-zinc-500 transition-colors"
@@ -195,22 +233,24 @@ const App: React.FC = () => {
 
           {/* Name Header */}
           <div className="flex-1 flex flex-col justify-center py-10">
-            <h1 className="text-6xl sm:text-8xl md:text-[9rem] lg:text-[12rem] xl:text-[14rem] font-serif font-normal leading-[1.1] tracking-tight mb-20 md:mb-32 animate-in fade-in slide-in-from-bottom-8 duration-1000 whitespace-nowrap">
+            <h1 className="text-4xl sm:text-6xl md:text-[6.5rem] lg:text-[8rem] xl:text-[9.5rem] font-serif font-normal leading-[1.1] tracking-tight mb-20 md:mb-32 animate-in fade-in slide-in-from-bottom-8 duration-1000 whitespace-nowrap">
               {PROFILE.name}
             </h1>
-            
+
             {/* Animated Title and Bio */}
             <div id="about" className="max-w-full md:max-w-4xl ml-auto text-right">
-              <div className="relative inline-block w-full">
-                <h2 className="whitespace-nowrap text-3xl sm:text-5xl md:text-8xl lg:text-[8rem] xl:text-[9.5rem] font-serif mb-8 tracking-tight leading-[1.1] min-h-[1.1em] text-right pr-6 sm:pr-8 md:pr-12">
-                  {typedTitle}
-                  <span 
-                    className={`absolute right-0 top-[0.15em] w-[2px] md:w-[3px] h-[0.8em] bg-black ${
-                      isDeleting && typedTitle.length === titles[titleIndex].length 
-                      ? 'animate-pulse' 
-                      : (isDeleting || typedTitle.length === 0 ? '' : 'animate-pulse')
-                    }`}
-                  />
+              <div className="flex justify-end">
+                <h2 className="whitespace-nowrap text-2xl sm:text-4xl md:text-6xl lg:text-[6.5rem] xl:text-[7.5rem] font-serif mb-8 tracking-tight leading-[1.1] min-h-[1.1em] text-right pr-6 sm:pr-8 md:pr-12">
+                  <span className="relative inline-block">
+                    {typedTitle || '\u00A0'}
+                    <span 
+                      className={`absolute right-0 top-[0.05em] translate-x-[0.12em] w-[2px] md:w-[3px] h-[0.8em] bg-black ${
+                        isDeleting && typedTitle.length === titles[titleIndex].length 
+                        ? 'animate-pulse' 
+                        : (isDeleting || typedTitle.length === 0 ? '' : 'animate-pulse')
+                      }`}
+                    />
+                  </span>
                 </h2>
               </div>
               
@@ -260,8 +300,8 @@ const App: React.FC = () => {
         </section>
       </div>
 
-      {/* Services Section - Background changed to a soft cream color */}
-      <section id="services" className={`bg-[#F9F7F2] text-black w-full py-24 md:py-32 transition-all duration-1000 ${showContent ? 'opacity-100' : 'opacity-0'}`}>
+      {/* Services Section */}
+      <section id="services" className={`bg-[#F3F7F3] text-black w-full py-24 md:py-32 transition-all duration-1000 ${showContent ? 'opacity-100' : 'opacity-0'}`}>
         <div className="px-6 md:px-12 lg:px-24 flex flex-col">
           
           <div className="grid grid-cols-1 md:grid-cols-[1fr_2.5fr] gap-x-12 items-end mb-6">
@@ -301,60 +341,153 @@ const App: React.FC = () => {
               {PROCESS_STEPS.map((step) => {
                 const isOpen = openSteps.includes(step.number);
                 return (
-                  <div 
-                    key={step.number} 
-                    onClick={() => toggleStep(step.number)}
-                    className="group relative flex flex-col pt-12 pb-12 border-b border-zinc-400 cursor-pointer overflow-hidden transition-all duration-500"
-                  >
-                    <div className="flex items-center justify-between w-full relative z-10">
-                      <div className="flex items-center gap-6 md:gap-12">
-                        
-                        {/* Kinetic Infinite-Loop Number Animation */}
-                        <div className="text-xs md:text-sm font-medium text-zinc-500 tabular-nums flex overflow-visible">
-                          {step.number.split('').map((char, i) => (
-                            <div key={i} className="relative overflow-hidden h-[1.2em] flex flex-col leading-none">
-                              <span className={`transition-transform duration-[1000ms] ease-[0.83,0,0.17,1] ${i === 0 ? 'group-hover:-translate-y-[150%]' : 'group-hover:translate-y-[150%]'}`}>
-                                {char}
-                              </span>
-                              <span className={`absolute inset-0 transition-transform duration-[1000ms] ease-[0.83,0,0.17,1] ${i === 0 ? 'translate-y-[150%] group-hover:translate-y-0' : '-translate-y-[150%] group-hover:translate-y-0'}`}>
-                                {char}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
+                  <React.Fragment key={step.number}>
+                    <div 
+                      onClick={() => toggleStep(step.number)}
+                      className="group relative flex flex-col pt-12 pb-12 border-b border-zinc-400 cursor-pointer overflow-hidden transition-all duration-500"
+                    >
+                      <div className="flex items-center justify-between w-full relative z-10">
+                        <div className="flex items-center gap-6 md:gap-12">
+                          
+                          {/* Kinetic Infinite-Loop Number Animation */}
+                          <div className="text-xs md:text-sm font-medium text-zinc-500 tabular-nums flex overflow-visible">
+                            {step.number.split('').map((char, i) => (
+                              <div key={i} className="relative overflow-hidden h-[1.2em] flex flex-col leading-none">
+                                <span className={`transition-transform duration-[1000ms] ease-[0.83,0,0.17,1] ${i === 0 ? 'group-hover:-translate-y-[150%]' : 'group-hover:translate-y-[150%]'}`}>
+                                  {char}
+                                </span>
+                                <span className={`absolute inset-0 transition-transform duration-[1000ms] ease-[0.83,0,0.17,1] ${i === 0 ? 'translate-y-[150%] group-hover:translate-y-0' : '-translate-y-[150%] group-hover:translate-y-0'}`}>
+                                  {char}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
 
-                        {/* Kinetic Infinite-Loop Title Animation */}
-                        <h3 className={`text-4xl sm:text-5xl md:text-6xl font-serif font-normal tracking-tight flex gap-x-3 overflow-visible`}>
-                          {step.title.split(' ').map((word, i) => (
-                            <div key={i} className="relative overflow-hidden h-[1.1em] flex flex-col leading-none">
-                              <span className={`transition-transform duration-[1000ms] ease-[0.83,0,0.17,1] ${i === 0 ? 'group-hover:-translate-y-[150%]' : 'group-hover:translate-y-[150%]'}`}>
-                                {word}
-                              </span>
-                              <span className={`absolute inset-0 transition-transform duration-[1000ms] ease-[0.83,0,0.17,1] ${i === 0 ? 'translate-y-[150%] group-hover:translate-y-0' : '-translate-y-[150%] group-hover:translate-y-0'}`}>
-                                {word}
-                              </span>
-                            </div>
-                          ))}
-                        </h3>
+                          {/* Kinetic Infinite-Loop Title Animation */}
+                          <h3 className={`text-4xl sm:text-5xl md:text-6xl font-serif font-normal tracking-tight flex gap-x-3 overflow-visible`}>
+                            {step.title.split(' ').map((word, i) => (
+                              <div key={i} className="relative overflow-hidden h-[1.1em] flex flex-col leading-none">
+                                <span className={`transition-transform duration-[1000ms] ease-[0.83,0,0.17,1] ${i === 0 ? 'group-hover:-translate-y-[150%]' : 'group-hover:translate-y-[150%]'}`}>
+                                  {word}
+                                </span>
+                                <span className={`absolute inset-0 transition-transform duration-[1000ms] ease-[0.83,0,0.17,1] ${i === 0 ? 'translate-y-[150%] group-hover:translate-y-0' : '-translate-y-[150%] group-hover:translate-y-0'}`}>
+                                  {word}
+                                </span>
+                              </div>
+                            ))}
+                          </h3>
+                        </div>
+                        <div className="relative w-8 h-8 md:w-10 md:h-10 flex items-center justify-center">
+                          <div className={`absolute w-full h-[1px] bg-black transition-opacity duration-300 ${isOpen ? 'opacity-0' : 'opacity-100'}`}></div>
+                          <div className="absolute h-full w-[1px] bg-black"></div>
+                        </div>
                       </div>
-                      <div className="relative w-8 h-8 md:w-10 md:h-10 flex items-center justify-center">
-                        <div className={`absolute w-full h-[1px] bg-black transition-opacity duration-300 ${isOpen ? 'opacity-0' : 'opacity-100'}`}></div>
-                        <div className="absolute h-full w-[1px] bg-black"></div>
+                      
+                      <div className={`transition-all duration-700 ease-in-out overflow-hidden ${isOpen ? 'max-h-64 opacity-100 mt-6' : 'max-h-0 opacity-0'}`}>
+                        <p className="ml-12 md:ml-24 max-w-xl text-zinc-600 text-lg md:text-xl leading-relaxed pb-6">
+                          {step.description}
+                        </p>
                       </div>
                     </div>
-                    
-                    <div className={`transition-all duration-700 ease-in-out overflow-hidden ${isOpen ? 'max-h-64 opacity-100 mt-6' : 'max-h-0 opacity-0'}`}>
-                      <p className="ml-12 md:ml-24 max-w-xl text-zinc-600 text-lg md:text-xl leading-relaxed pb-6">
-                        {step.description}
-                      </p>
-                    </div>
-                  </div>
+                  </React.Fragment>
                 );
               })}
             </div>
           </div>
         </div>
       </section>
+
+      {/* My Work Section */}
+      <section id="featured-work" className={`bg-[#BFC7B4] text-black w-full py-24 md:py-32 transition-all duration-1000 ${showContent ? 'opacity-100' : 'opacity-0'}`}>
+        <div className="px-6 md:px-12 lg:px-24 flex flex-col">
+          
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_2.5fr] gap-x-12 items-end mb-6">
+            <div>
+              <h2 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-serif font-normal tracking-tight leading-[1] select-none whitespace-nowrap">
+                {workText}
+              </h2>
+            </div>
+            <div className="pb-4 md:pb-6"></div>
+          </div>
+
+          <div className="w-full h-[1px] bg-black/30 mb-12"></div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {workItems.map((item) => (
+              <article
+                key={item.id}
+                onClick={() => setActiveWorkId(item.id)}
+                className="group border border-black/20 bg-white rounded-2xl px-8 py-10 min-h-[320px] flex flex-col justify-between transition-transform duration-300 hover:-translate-y-1 cursor-pointer"
+              >
+                <div>
+                  <h3 className="text-3xl md:text-4xl font-serif font-normal tracking-tight">
+                    {item.title}
+                  </h3>
+                  <p className="mt-4 text-[10px] md:text-xs uppercase tracking-[0.3em] text-black/60">
+                    {item.tag}
+                  </p>
+                  <div className="mt-6 overflow-hidden rounded-xl border border-black/10">
+                    <img
+                      src={item.image}
+                      alt={`${item.title} preview`}
+                      className="h-40 md:h-44 w-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                </div>
+                <div className="mt-10 flex items-center justify-end text-[10px] uppercase tracking-[0.3em] text-black/60">
+                  <span className="transition-transform duration-300 group-hover:translate-x-1">View →</span>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {activeWork && (
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/30 backdrop-blur-sm"
+          onClick={() => setActiveWorkId(null)}
+        >
+          <div
+            className="relative w-[96vw] h-[92vh] overflow-y-auto bg-[#FDFDFD] rounded-3xl border border-black/20 shadow-xl p-8 md:p-12"
+            onClick={() => setActiveWorkId(null)}
+          >
+            <button
+              className="absolute right-6 top-6 text-[10px] uppercase tracking-[0.3em] text-zinc-500 hover:text-black transition-colors"
+              onClick={() => setActiveWorkId(null)}
+            >
+              Close
+            </button>
+            <p className="text-[10px] uppercase tracking-[0.3em] text-black/60">
+              {activeWork.tag}
+            </p>
+            <h3 className="mt-4 text-3xl md:text-4xl font-serif font-normal tracking-tight">
+              {activeWork.title}
+            </h3>
+            <div className="mt-6 overflow-hidden rounded-2xl border border-black/10">
+              <img
+                src={activeWork.image}
+                alt={`${activeWork.title} detail`}
+                className="h-56 md:h-72 w-full object-cover"
+              />
+            </div>
+            <p className="mt-6 text-base md:text-lg text-zinc-700 leading-relaxed">
+              {activeWork.description}
+            </p>
+            <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-zinc-600">
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.3em] text-black/60">Scope</p>
+                <p className="mt-2">Strategy, positioning, and experiential execution.</p>
+              </div>
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.3em] text-black/60">Impact</p>
+                <p className="mt-2">Audience growth, stakeholder alignment, and measurable lift.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Footer Section - Black background and white text */}
       <div className={`bg-black transition-opacity duration-1000 ${showContent ? 'opacity-100' : 'opacity-0'}`}>
