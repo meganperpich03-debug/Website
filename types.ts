@@ -1,18 +1,12 @@
-export interface NavItem {
-  label: string;
-  href: string;
-}
 
-export interface Article {
-  id: string;
-  title: string;
-  category: string;
-  description: string;
-  imageUrl: string;
+export interface Message {
+  role: 'user' | 'model';
+  text: string;
 }
 
 export interface Project {
+  id: string;
   title: string;
-  type: string;
-  imageUrl?: string;
+  description: string;
+  category: string;
 }

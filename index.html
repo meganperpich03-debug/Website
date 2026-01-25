@@ -1,90 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Megan Perpich | Human-Centered Campaigns</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Megan Perpich | Marketer</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              background: '#F9F8F4', // Warm off-white
-              charcoal: '#1A1A1A',   // Primary text
-              muted: '#5A5A5A',      // Secondary text
-              accent: '#3A4D3F',     // Deep forest green
-              border: '#D1D1D1',     // Divider color
-            },
-            fontFamily: {
-              serif: ['"Libre Baskerville"', 'Georgia', 'serif'],
-              sans: ['"Inter"', 'sans-serif'],
-            },
-            keyframes: {
-              'fade-up': {
-                '0%': { opacity: '0', transform: 'translateY(20px)' },
-                '100%': { opacity: '1', transform: 'translateY(0)' },
-              },
-              'draw-line': {
-                '0%': { width: '0' },
-                '100%': { width: '100%' },
-              }
-            },
-            animation: {
-              'fade-up': 'fade-up 0.8s cubic-bezier(0.21, 0.45, 0.32, 0.9) forwards',
-              'draw-line': 'draw-line 1.2s cubic-bezier(0.65, 0, 0.35, 1) forwards',
-            }
-          },
-        },
-      }
-    </script>
-    <style>
-      .reveal {
-        opacity: 0;
-        transform: translateY(30px);
-        transition: opacity 1s cubic-bezier(0.21, 0.45, 0.32, 0.9), transform 1s cubic-bezier(0.21, 0.45, 0.32, 0.9);
-      }
-      .reveal.visible {
-        opacity: 1;
-        transform: translateY(0);
-      }
-      .delay-100 { transition-delay: 100ms; }
-      .delay-200 { transition-delay: 200ms; }
-      .delay-300 { transition-delay: 300ms; }
-      .delay-400 { transition-delay: 400ms; }
-      
-      /* Image reveal effect */
-      .img-reveal {
-        clip-path: inset(0 100% 0 0);
-        transition: clip-path 1.2s cubic-bezier(0.77, 0, 0.175, 1);
-      }
-      .img-reveal.visible {
-        clip-path: inset(0 0 0 0);
-      }
-      
-      /* Smooth scroll behavior */
-      html {
-        scroll-behavior: smooth;
-      }
-    </style>
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <script type="importmap">
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #ffffff;
+            color: #000000;
+            cursor: none; /* Hide default cursor */
+        }
+        .font-serif {
+            font-family: 'Bodoni Moda', serif;
+        }
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        ::-webkit-scrollbar {
+          display: none;
+        }
+        /* Hide scrollbar for IE, Edge and Firefox */
+        html {
+          -ms-overflow-style: none;  /* IE and Edge */
+          scrollbar-width: none;  /* Firefox */
+          scroll-behavior: smooth;
+        }
+        /* Ensure interactive elements also don't show the cursor */
+        a, button, [role="button"], input, textarea {
+            cursor: none !important;
+        }
+    </style>
+<script type="importmap">
 {
   "imports": {
+    "react": "https://esm.sh/react@^19.2.3",
     "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
     "react/": "https://esm.sh/react@^19.2.3/",
-    "react": "https://esm.sh/react@^19.2.3"
+    "@google/genai": "https://esm.sh/@google/genai@^1.38.0"
   }
 }
 </script>
 <link rel="stylesheet" href="/index.css">
 </head>
-  <body class="bg-background text-charcoal antialiased overflow-x-hidden">
+<body>
     <div id="root"></div>
-  <script type="module" src="/index.tsx"></script>
+<script type="module" src="/index.tsx"></script>
 </body>
 </html>

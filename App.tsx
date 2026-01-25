@@ -1,367 +1,379 @@
+
 import React, { useState, useEffect, useRef } from 'react';
-import { Navigation } from './components/Navigation';
-import { Button } from './components/Button';
+import { PROFILE, PROCESS_STEPS } from './constants';
 
-type View = 'home' | 'about' | 'work' | 'project';
-
-interface WorkItem {
-  id: string;
-  title: string;
-  description: string;
-  imageUrl: string;
-  category: string;
-  platform: string;
-  rolesResponsibilities: string;
-  team: string;
-  timeline: string;
-  context: string;
-  gap: string;
-  obstaclesConstraints: string;
-  solution: string;
-  resultsImpact: string;
-}
-
-const workItems: WorkItem[] = [
-  {
-    id: '1',
-    title: 'Adapting Higher Education for Tomorrow',
-    category: 'Strategy / Education',
-    description: 'How universities can evolve in an uncertain future. A deep dive into curriculum reform and global accessibility.',
-    imageUrl: 'https://images.unsplash.com/photo-1544531586-fde5298cdd40?q=80&w=1000&auto=format&fit=crop',
-    platform: 'Multi-institutional Digital Learning Ecosystem',
-    rolesResponsibilities: 'Lead Strategic Advisor, Ethnographic Researcher, Stakeholder Management',
-    team: '4 Data Analysts, 2 Learning Experience Designers, 1 Institutional Policy Expert',
-    timeline: '10 Months (Q1 2024 - Q4 2024)',
-    context: 'Following global shifts in student demographics and the rise of remote learning, traditional higher education institutions were struggling to maintain engagement and fiscal sustainability. The project focused on three major research universities in North America and Europe.',
-    gap: 'A significant disconnect existed between rigid, 4-year degree structures and the needs of "non-traditional" learners (working professionals, international students) who required modular, stackable credentials.',
-    obstaclesConstraints: 'Institutional inertia was high. Tenured faculty were wary of "digitization," and legacy IT infrastructure made real-time cross-departmental collaboration technically difficult.',
-    solution: 'We developed a "Modular Curriculum Framework" that allowed for interdisciplinary credit sharing and a unified digital portal. This was supported by a phased policy transition plan to ease faculty concerns through evidence-based workshops.',
-    resultsImpact: 'Adopted by all three partner institutions, resulting in a 18% increase in non-traditional student enrollment and a 25% reduction in administrative overhead for course management.'
-  },
-  {
-    id: '2',
-    title: 'Navigating Cross-Cultural Leadership',
-    category: 'Cultural Research / Business',
-    description: 'Lessons from working across different regions. Understanding the subtle nuances of international diplomacy in business.',
-    imageUrl: 'https://images.unsplash.com/photo-1573497620053-ea5300f94f21?q=80&w=1000&auto=format&fit=crop',
-    platform: 'Global Internal Communications & Training System',
-    rolesResponsibilities: 'Cultural Anthropologist, Executive Coach, Strategic Communications Lead',
-    team: '2 Regional Directors, 1 Organizational Psychologist, 1 Visual Storyteller',
-    timeline: '6 Months (2023)',
-    context: 'A Fortune 500 company was experiencing high friction and project slippage in collaborations between its EMEA and APAC headquarters, leading to a breakdown in global innovation cycles.',
-    gap: 'Leadership models were based on a "one-size-fits-all" Western corporate culture that failed to account for high-context vs. low-context communication styles and differing hierarchical expectations.',
-    obstaclesConstraints: 'Deeply ingrained cognitive biases within executive leadership and a lack of transparency in cross-regional performance metrics.',
-    solution: 'Initiated a "Cultural Resonance Mapping" study. We translated findings into a tailored leadership training program and redesigned the internal project management tool to allow for regional communication preferences.',
-    resultsImpact: 'Documented a 40% reduction in project delays attributed to "miscommunication" and a 15-point increase in Net Promoter Scores for international team morale.'
-  },
-  {
-    id: '3',
-    title: 'Reimagining Urban Social Spaces',
-    category: 'Urban Sociology / Architecture',
-    description: 'Designing cities for connection rather than just transit. A study on the sociological impact of public architecture.',
-    imageUrl: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?q=80&w=1000&auto=format&fit=crop',
-    platform: 'Civic Architecture / Urban Planning Commission',
-    rolesResponsibilities: 'Sociological Advisor, Community Engagement Lead, Design Consultant',
-    team: '3 Urban Architects, 2 Landscape Designers, 1 City Planner, 1 Public Arts Liaison',
-    timeline: '14 Months (2022-2023)',
-    context: 'In rapidly densifying urban centers, traditional public spaces were becoming transactional—places people passed through rather than gathered in, leading to a decline in civic participation.',
-    gap: 'Existing city planners prioritized transit efficiency and safety-through-visibility (surveillance) over the psychological need for intimate "third places" and spontaneous social collision.',
-    obstaclesConstraints: 'Stringent local safety codes and limited municipal budgets required solutions that were both low-cost and high-durability.',
-    solution: 'We proposed "Social Anchor Design"—integrating flexible seating, warm lighting schemes, and community-curated art into existing transit hubs. We led 12 community co-design workshops to ensure local ownership.',
-    resultsImpact: 'The redesign of two pilot plazas saw a 30% increase in average "linger time" and a measurable rise in local community event attendance, revitalizing nearby small businesses.'
-  },
-  {
-    id: '4',
-    title: 'The Future of Digital Identity',
-    category: 'Digital Ethics / Technology',
-    description: 'Balancing privacy and personalization in the next era of the web. Why transparency is the new currency of trust.',
-    imageUrl: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1000&auto=format&fit=crop',
-    platform: 'Decentralized Identity Prototype (Web3)',
-    rolesResponsibilities: 'Ethical Design Lead, Creative Director, UX Strategist',
-    team: '3 Blockchain Engineers, 1 Cryptography Expert, 2 UI Designers',
-    timeline: '9 Months (2023-2024)',
-    context: 'User trust in digital platforms was at an all-time low due to data breaches and opaque tracking. The industry was at a crossroads between total surveillance and total user disconnection.',
-    gap: 'Most privacy tools were designed by engineers for engineers, resulting in interfaces that were too complex for average users to actually exercise their right to privacy.',
-    obstaclesConstraints: 'The technical complexity of Zero-Knowledge Proofs (ZKP) made it difficult to create an interface that was both secure and fast enough for modern consumer expectations.',
-    solution: 'Designed a "Transparent Consent Ecosystem." We simplified complex cryptographic actions into intuitive "Trust Badges" and a centralized data dashboard where users could revoke permissions with one click.',
-    resultsImpact: 'The prototype achieved a 94% user comprehension rate in testing—a massive leap from the 12% industry average. It is currently being integrated into two major financial platforms.'
-  }
+const GREETINGS = [
+  "Hello",        // English
+  "Hola",         // Spanish
+  "안녕하세요",     // Korean
+  "Hallo",        // German
+  "こんにちは",     // Japanese
+  "你好",          // Taiwanese
+  "Ciao",         // Italian
+  "నమస్కారం",      // Telugu
+  "Hello"         // English (End)
 ];
 
-function App() {
-  const [currentView, setCurrentView] = useState<View>('home');
-  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
-  const workScrollRef = useRef<HTMLDivElement>(null);
+const App: React.FC = () => {
+  const [introFinished, setIntroFinished] = useState(false);
+  const [currentGreetingIndex, setCurrentGreetingIndex] = useState(0);
+  const [showContent, setShowContent] = useState(false);
+  const [preloaderGone, setPreloaderGone] = useState(false);
 
-  // Intersection Observer for Scroll Animations
+  const titles = ["Marketer", "Problem solver", "Artist", "Entrepreneur", "Event planner", "Project manager"];
+  const [titleIndex, setTitleIndex] = useState(0);
+  const [typedTitle, setTypedTitle] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [typingSpeed, setTypingSpeed] = useState(150);
+  
+  const [openSteps, setOpenSteps] = useState<string[]>([]);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [isHovering, setIsHovering] = useState(false);
+  const cursorRef = useRef<HTMLDivElement>(null);
+
+  const [revealCount, setRevealCount] = useState(0);
+  const servicesHeaderRef = useRef<HTMLHeadingElement>(null);
+  const servicesText = "Services";
+
+  // Intro Sequence Effect
   useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    }, { threshold: 0.1 });
-
-    const elements = document.querySelectorAll('.reveal, .img-reveal');
-    elements.forEach(el => observer.observe(el));
-
-    return () => observer.disconnect();
-  }, [currentView, selectedProjectId]);
-
-  const handleNavigate = (view: View, hash?: string) => {
-    setCurrentView(view);
-    setSelectedProjectId(null);
-    if (hash) {
-      setTimeout(() => {
-        const element = document.getElementById(hash);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        } else {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-      }, 100);
+    if (currentGreetingIndex < GREETINGS.length - 1) {
+      const timer = setTimeout(() => {
+        setCurrentGreetingIndex(prev => prev + 1);
+      }, 200);
+      return () => clearTimeout(timer);
     } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      const timer = setTimeout(() => {
+        setIntroFinished(true);
+        setTimeout(() => setShowContent(true), 150);
+        // Completely remove preloader from DOM after animation completes (1s transition + buffer)
+        setTimeout(() => setPreloaderGone(true), 1200);
+      }, 800);
+      return () => clearTimeout(timer);
     }
-  };
+  }, [currentGreetingIndex]);
 
-  const handleProjectClick = (id: string) => {
-    setSelectedProjectId(id);
-    setCurrentView('project');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  // General listeners
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePos({ x: e.clientX, y: e.clientY });
+      const target = e.target as HTMLElement;
+      const isInteractive = 
+        target.tagName === 'A' || 
+        target.tagName === 'BUTTON' || 
+        target.closest('button') || 
+        target.closest('a') ||
+        window.getComputedStyle(target).cursor === 'pointer';
+      setIsHovering(!!isInteractive);
+    };
 
-  const scrollContainer = (ref: React.RefObject<HTMLDivElement | null>, direction: 'left' | 'right') => {
-    if (ref.current) {
-      const scrollAmount = ref.current.clientWidth * 0.8;
-      ref.current.scrollBy({
-        left: direction === 'left' ? -scrollAmount : scrollAmount,
-        behavior: 'smooth'
-      });
-    }
-  };
+    const handleScroll = () => {
+      if (servicesHeaderRef.current) {
+        const rect = servicesHeaderRef.current.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+        const startTrigger = windowHeight * 0.95;
+        const endTrigger = windowHeight * 0.6;
+        const totalDistance = startTrigger - endTrigger;
+        const currentProgress = startTrigger - rect.top;
+        const progress = Math.max(0, Math.min(1, currentProgress / totalDistance));
+        const count = Math.floor(progress * (servicesText.length + 1));
+        setRevealCount(count);
+      }
+    };
 
-  const renderWorkSection = (title: string = "Featured Work", isCarousel: boolean = true) => (
-    <section id="writing" className={`py-12 md:py-24 max-w-7xl mx-auto border-t border-border ${isCarousel ? 'overflow-hidden' : ''}`}>
-      <div className="px-8 sm:px-12 flex justify-between items-end mb-8 md:mb-12 reveal">
-        <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl text-charcoal">{title}</h2>
-        {isCarousel && (
-          <div className="hidden md:flex gap-4">
-            <button onClick={() => scrollContainer(workScrollRef, 'left')} className="p-3 border border-border hover:bg-charcoal hover:text-white transition-all duration-300"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19l-7-7 7-7" /></svg></button>
-            <button onClick={() => scrollContainer(workScrollRef, 'right')} className="p-3 border border-border hover:bg-charcoal hover:text-white transition-all duration-300"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" /></svg></button>
-          </div>
-        )}
-      </div>
-      
-      {isCarousel ? (
-        <div 
-          ref={workScrollRef}
-          className="flex gap-6 md:gap-12 overflow-x-auto snap-x snap-mandatory px-8 sm:px-12 no-scrollbar pb-4 scroll-pl-8"
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-        >
-          {workItems.map((item, idx) => (
-            <div key={item.id} onClick={() => handleProjectClick(item.id)} className="min-w-[80%] md:min-w-[45%] snap-start group cursor-pointer mb-8 reveal" style={{ transitionDelay: `${idx * 100}ms` }}>
-              <div className="aspect-[16/10] overflow-hidden mb-4 bg-neutral-100">
-                <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105" />
-              </div>
-              <div className="flex flex-col gap-2 transition-transform duration-500 group-hover:-translate-y-1">
-                <h3 className="text-xl sm:text-2xl font-serif group-hover:text-accent transition-colors">{item.title}</h3>
-                <p className="font-sans text-sm text-muted leading-relaxed line-clamp-2">{item.description}</p>
-              </div>
-            </div>
-          ))}
-          {/* Spacer for horizontal scroll end */}
-          <div className="min-w-[1px] h-full"></div>
-        </div>
-      ) : (
-        <div className="grid md:grid-cols-2 gap-12 md:gap-x-16 md:gap-y-20 px-8 sm:px-12">
-          {workItems.map((item, idx) => (
-            <div key={item.id} onClick={() => handleProjectClick(item.id)} className="group cursor-pointer reveal" style={{ transitionDelay: `${(idx % 2) * 200}ms` }}>
-              <div className="aspect-[16/10] overflow-hidden mb-6 bg-neutral-100">
-                 <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105" />
-              </div>
-              <div className="flex flex-col gap-3 transition-transform duration-500 group-hover:-translate-y-1">
-                <h3 className="text-2xl font-serif group-hover:text-accent transition-colors">{item.title}</h3>
-                <p className="font-sans text-muted leading-relaxed">{item.description}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </section>
-  );
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
 
-  const renderProjectDetail = (id: string) => {
-    const project = workItems.find(p => p.id === id);
-    if (!project) return null;
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
-    return (
-      <div className="pt-24 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
-        <div className="max-w-4xl mx-auto px-8 sm:px-12">
-          <button onClick={() => handleNavigate('work')} className="group flex items-center gap-2 font-sans text-[10px] uppercase tracking-widest text-muted hover:text-charcoal transition-colors mb-12">
-            <span className="transition-transform duration-300 group-hover:-translate-x-1">&larr;</span> Back to Work
-          </button>
+  // Title typing effect
+  useEffect(() => {
+    if (!showContent) return;
 
-          <header className="mb-16 space-y-6">
-            <span className="font-sans text-[9px] uppercase tracking-[0.4em] text-accent font-bold animate-fade-up block">Case Study / {project.category}</span>
-            <h1 className="text-3xl sm:text-5xl md:text-7xl font-serif leading-tight animate-fade-up [animation-delay:100ms] text-charcoal">{project.title}</h1>
-            <p className="text-lg sm:text-xl md:text-2xl font-serif italic text-muted opacity-80 animate-fade-up [animation-delay:200ms] max-w-3xl leading-relaxed">
-              {project.description}
-            </p>
-          </header>
+    const currentFullTitle = titles[titleIndex];
+    const handleTyping = () => {
+      if (!isDeleting) {
+        setTypedTitle(currentFullTitle.substring(0, typedTitle.length + 1));
+        setTypingSpeed(150);
+        if (typedTitle.length === currentFullTitle.length) {
+          setTypedTitle(currentFullTitle);
+          setTypingSpeed(1500);
+          setIsDeleting(true);
+        }
+      } else {
+        setTypedTitle(currentFullTitle.substring(0, typedTitle.length - 1));
+        setTypingSpeed(75);
+        if (typedTitle.length === 0) {
+          setIsDeleting(false);
+          setTitleIndex((prev) => (prev + 1) % titles.length);
+          setTypingSpeed(500);
+        }
+      }
+    };
+    const timer = setTimeout(handleTyping, typingSpeed);
+    return () => clearTimeout(timer);
+  }, [typedTitle, isDeleting, titleIndex, typingSpeed, titles, showContent]);
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-y-8 gap-x-12 py-10 border-y border-border/40 mb-20 animate-fade-up [animation-delay:300ms]">
-            <div className="space-y-1">
-              <h5 className="font-sans text-[9px] uppercase tracking-widest text-muted font-bold">Platform</h5>
-              <p className="font-serif text-sm">{project.platform}</p>
-            </div>
-            <div className="space-y-1">
-              <h5 className="font-sans text-[9px] uppercase tracking-widest text-muted font-bold">Roles & Resp.</h5>
-              <p className="font-serif text-sm">{project.rolesResponsibilities}</p>
-            </div>
-            <div className="space-y-1">
-              <h5 className="font-sans text-[9px] uppercase tracking-widest text-muted font-bold">Team</h5>
-              <p className="font-serif text-sm">{project.team}</p>
-            </div>
-            <div className="space-y-1">
-              <h5 className="font-sans text-[9px] uppercase tracking-widest text-muted font-bold">Timeline</h5>
-              <p className="font-serif text-sm">{project.timeline}</p>
-            </div>
-          </div>
-
-          <div className="space-y-20 md:space-y-24">
-            {[
-              { id: '01', title: 'Context', content: project.context },
-              { id: '02', title: 'The Gap', content: project.gap },
-              { id: '03', title: 'Constraints', content: project.obstaclesConstraints },
-              { id: '04', title: 'Solution', content: project.solution },
-              { id: '05', title: 'Impact', content: project.resultsImpact },
-            ].map((section) => (
-              <div key={section.id} className="grid md:grid-cols-12 gap-4 md:gap-8 reveal">
-                <div className="md:col-span-4">
-                  <h3 className="font-sans text-[9px] uppercase tracking-[0.3em] text-accent font-bold md:sticky md:top-32">{section.id} / {section.title}</h3>
-                </div>
-                <div className="md:col-span-8">
-                  <p className="font-serif text-base md:text-xl leading-relaxed text-charcoal/90">{section.content}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+  const toggleStep = (number: string) => {
+    setOpenSteps(prev => 
+      prev.includes(number) 
+        ? prev.filter(step => step !== number) 
+        : [...prev, number]
     );
   };
 
-  const renderContent = () => {
-    switch (currentView) {
-      case 'project':
-        return selectedProjectId ? renderProjectDetail(selectedProjectId) : null;
-      case 'home':
-        return (
-          <>
-            <section id="home" className="pt-28 pb-12 md:pt-48 md:pb-24 px-8 sm:px-12 max-w-7xl mx-auto">
-              <div className="flex flex-col-reverse md:flex-row gap-10 md:gap-16 items-center">
-                <div className="flex-1 space-y-6 md:space-y-8 animate-fade-up w-full text-center md:text-left">
-                  <h1 className="text-3xl sm:text-5xl md:text-6xl font-serif leading-tight text-charcoal">Hi, I'm Megan</h1>
-                  <div className="hidden md:block w-16 h-[1px] bg-border my-6 origin-left animate-draw-line"></div>
-                  <p className="font-sans text-base sm:text-lg text-muted max-w-md mx-auto md:mx-0 leading-relaxed animate-fade-up [animation-delay:200ms]">
-                    I create human-centered, authentic, and culturally informed campaigns that turn real stories into meaningful impact.
-                  </p>
-                  <div className="pt-4 animate-fade-up [animation-delay:400ms]">
-                    <Button onClick={() => handleNavigate('about')} className="w-full sm:w-auto">More About Me</Button>
-                  </div>
-                </div>
-                <div className="flex-1 w-full max-w-sm md:max-w-none">
-                  <div className="aspect-[4/5] md:aspect-square bg-neutral-200 w-full overflow-hidden relative img-reveal visible shadow-2xl">
-                    <img src="/profile.jpg" alt="Megan" className="w-full h-full object-cover transition-all duration-1000 ease-out hover:scale-[1.02]" />
-                  </div>
-                </div>
-              </div>
-            </section>
-            {renderWorkSection("Featured Work", true)}
-            
-          </>
-        );
-      case 'work':
-        return (
-          <div className="pt-24 min-h-[60vh] relative">
-            <div className="max-w-7xl mx-auto px-8 sm:px-12 mb-12 animate-fade-up">
-               <h2 className="text-3xl sm:text-4xl font-serif mt-12">Featured Work</h2>
-            </div>
-            {renderWorkSection("", false)}
+  return (
+    <div className={`min-h-screen bg-white selection:bg-black selection:text-white flex flex-col font-light overflow-x-hidden relative ${!introFinished ? 'h-screen overflow-hidden' : ''}`}>
+      
+      {/* Intro Preloader Overlay - Completely unmounts after animation */}
+      {!preloaderGone && (
+        <div 
+          className={`fixed inset-0 z-[10000] bg-[#101010] flex items-center justify-center transition-transform duration-[1000ms] ease-[0.83,0,0.17,1] pointer-events-none ${
+            introFinished ? '-translate-y-[110%]' : 'translate-y-0'
+          }`}
+        >
+          <div className="relative overflow-hidden flex flex-col items-center">
+            <p className="text-white text-4xl md:text-6xl font-serif font-light tracking-tight flex items-center">
+              {GREETINGS[currentGreetingIndex]}
+            </p>
           </div>
           
-        );
-      case 'about':
-        return (
-          <section id="about" className="pt-24 pb-16 md:pt-48 md:pb-32 px-8 sm:px-12 max-w-7xl mx-auto">
-            <div className="grid md:grid-cols-12 gap-10 md:gap-16 items-start">
-              {/* Image Section - First on Mobile, Sticky on Desktop */}
-              <div className="md:col-span-5 md:sticky md:top-32 order-1 md:order-2">
-                <div className="aspect-[4/5] bg-neutral-100 overflow-hidden shadow-xl border border-border/20 img-reveal visible">
-                  <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?q=80&w=1000&auto=format&fit=crop" alt="Megan" className="w-full h-full object-cover grayscale transition-all duration-1000" />
-                </div>
+          {/* Subtle curve effect on bottom */}
+          <div className="absolute bottom-0 left-0 right-0 h-[20vh] bg-[#101010] translate-y-full rounded-[50%_50%_0_0] scale-x-[1.5]"></div>
+        </div>
+      )}
+
+      {/* Custom Dot Cursor */}
+      <div 
+        ref={cursorRef}
+        className="fixed top-0 left-0 w-3 h-3 bg-black rounded-full pointer-events-none z-[9999] transition-transform duration-150 ease-out"
+        style={{ 
+          transform: `translate3d(${mousePos.x - 6}px, ${mousePos.y - 6}px, 0) scale(${isHovering ? 2.5 : 1})`,
+          mixBlendMode: isHovering ? 'difference' : 'normal',
+          backgroundColor: isHovering ? '#ffffff' : '#000000',
+          opacity: showContent ? 1 : 0
+        }}
+      />
+
+      {/* Main Content */}
+      <div className={`px-6 md:px-12 lg:px-24 flex flex-col w-full transition-opacity duration-1000 ${showContent ? 'opacity-100' : 'opacity-0'}`}>
+        {/* Hero Section */}
+        <section className="min-h-screen flex flex-col py-12">
+          {/* Top Header */}
+          <header className="flex justify-end items-center mb-12 md:mb-20">
+            <nav className="flex items-center gap-6 md:gap-10">
+              <ul className="hidden md:flex items-center gap-8">
+                {['About', 'Services', 'Contact'].map((item) => (
+                  <li key={item}>
+                    <a 
+                      href={`#${item.toLowerCase()}`} 
+                      className="text-[10px] font-bold tracking-[0.2em] uppercase text-zinc-400 hover:text-black transition-colors"
+                    >
+                      {item}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <a 
+                href="https://linkedin.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-black hover:text-zinc-500 transition-colors"
+                aria-label="LinkedIn"
+              >
+                <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                  <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                </svg>
+              </a>
+            </nav>
+          </header>
+
+          {/* Name Header */}
+          <div className="flex-1 flex flex-col justify-center py-10">
+            <h1 className="text-6xl sm:text-8xl md:text-[9rem] lg:text-[12rem] xl:text-[14rem] font-serif font-normal leading-[1.1] tracking-tight mb-20 md:mb-32 animate-in fade-in slide-in-from-bottom-8 duration-1000 whitespace-nowrap">
+              {PROFILE.name}
+            </h1>
+            
+            {/* Animated Title and Bio */}
+            <div id="about" className="max-w-full md:max-w-4xl ml-auto text-right">
+              <div className="relative inline-block w-full">
+                <h2 className="whitespace-nowrap text-3xl sm:text-5xl md:text-8xl lg:text-[8rem] xl:text-[9.5rem] font-serif mb-8 tracking-tight leading-[1.1] min-h-[1.1em] text-right pr-6 sm:pr-8 md:pr-12">
+                  {typedTitle}
+                  <span 
+                    className={`absolute right-0 top-[0.15em] w-[2px] md:w-[3px] h-[0.8em] bg-black ${
+                      isDeleting && typedTitle.length === titles[titleIndex].length 
+                      ? 'animate-pulse' 
+                      : (isDeleting || typedTitle.length === 0 ? '' : 'animate-pulse')
+                    }`}
+                  />
+                </h2>
               </div>
               
-              {/* Text Section - Second on Mobile */}
-              <div className="md:col-span-7 space-y-10 animate-fade-up order-2 md:order-1">
-                <h2 className="text-4xl sm:text-6xl md:text-7xl font-serif text-charcoal">About Me</h2>
-                <div className="font-sans text-muted leading-relaxed text-base sm:text-lg space-y-6">
-                  <p className="reveal">I am a brand strategist and cultural researcher dedicated to helping organizations navigate the complexities of the modern human experience.</p>
-                  <p className="reveal delay-100">My journey began in sociology, where I learned to look beneath the surface to find underlying social currents. I prioritize deep listening and slow strategy over rapid tactics.</p>
-                  <p className="reveal delay-200">In an era of algorithms, I advocate for human intuition. I help partners build resonance not by being loudest, but by being the most meaningful.</p>
-                  <div className="pt-8 md:pt-12 border-t border-border/40 reveal">
-                    <h4 className="font-sans font-bold text-charcoal text-base uppercase tracking-widest mb-8">Expertise</h4>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-8 gap-x-10">
-                      {[
-                        { num: '01', title: 'Brand Strategy', desc: 'Defining authentic voices.' },
-                        { num: '02', title: 'Cultural Anthropology', desc: 'Uncovering social trends.' },
-                        { num: '03', title: 'Ethical AI', desc: 'Guiding the human side of tech.' },
-                        { num: '04', title: 'Urban Sociology', desc: 'Impact of physical space.' },
-                        { num: '05', title: 'Social Impact', desc: 'Aligning business with community.' },
-                        { num: '06', title: 'Global Leadership', desc: 'Bridging communication gaps.' }
-                      ].map((item, idx) => (
-                        <div key={item.num} className="flex items-start gap-3 reveal" style={{ transitionDelay: `${idx * 100}ms` }}>
-                          <span className="text-accent italic font-serif text-lg">{item.num}</span>
-                          <div className="space-y-1">
-                            <h5 className="font-bold text-sm text-charcoal">{item.title}</h5>
-                            <p className="text-xs text-muted">{item.desc}</p>
-                          </div>
+              <div className="max-w-3xl ml-auto">
+                <p className="text-lg md:text-xl lg:text-2xl leading-relaxed text-zinc-800 animate-in fade-in slide-in-from-right-8 duration-1000 delay-700 mb-8">
+                  {PROFILE.bio}
+                </p>
+                
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-1000">
+                  <a 
+                    href={`mailto:${PROFILE.email}`}
+                    className="inline-block px-8 py-4 border border-black text-[10px] md:text-xs font-bold tracking-[0.3em] uppercase transition-all duration-300 hover:bg-black hover:text-white hover:px-12"
+                  >
+                    Get in touch
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* About Me Section */}
+        <section className="flex flex-col md:flex-row gap-16 md:gap-24 items-start py-48">
+          <div className="flex-1 animate-in fade-in slide-in-from-left-8 duration-1000">
+            <h2 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-serif mb-12 tracking-tight leading-[1.1] font-normal">
+              About me
+            </h2>
+            <div className="max-w-2xl">
+              <p className="text-xl md:text-2xl leading-relaxed text-zinc-800">
+                {PROFILE.approach}
+              </p>
+            </div>
+          </div>
+          
+          <div className="w-full md:w-[35%] lg:w-[30%] animate-in fade-in slide-in-from-right-8 duration-1000 delay-300">
+            <div className="aspect-[3/4] overflow-hidden grayscale hover:grayscale-0 transition-all duration-1000 ease-in-out">
+              <img 
+                src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=2576&auto=format&fit=crop" 
+                alt="Megan Perpich Portrait" 
+                className="w-full h-full object-cover scale-110 hover:scale-100 transition-transform duration-1000"
+              />
+            </div>
+            <p className="text-[10px] font-bold tracking-widest uppercase text-zinc-400 mt-4 text-right">
+              Strategic Visionary — Based in NY
+            </p>
+          </div>
+        </section>
+      </div>
+
+      {/* Services Section - Background changed to a soft cream color */}
+      <section id="services" className={`bg-[#F9F7F2] text-black w-full py-24 md:py-32 transition-all duration-1000 ${showContent ? 'opacity-100' : 'opacity-0'}`}>
+        <div className="px-6 md:px-12 lg:px-24 flex flex-col">
+          
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_2.5fr] gap-x-12 items-end mb-6">
+            <div>
+              <h2 
+                ref={servicesHeaderRef}
+                className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-serif font-normal tracking-tight leading-[1] select-none"
+              >
+                {servicesText.split('').map((char, index) => (
+                  <span 
+                    key={index} 
+                    className={`inline-block transition-all duration-150 ease-out transform ${
+                      index < revealCount 
+                        ? 'opacity-100 translate-y-0 scale-100' 
+                        : 'opacity-0 translate-y-4 scale-95'
+                    }`}
+                  >
+                    {char}
+                  </span>
+                ))}
+              </h2>
+            </div>
+            <div className="pb-4 md:pb-6">
+              <span className="text-lg md:text-xl font-light text-zinc-500 tracking-tight">
+                Things I can help you with:
+              </span>
+            </div>
+          </div>
+
+          <div className="w-full h-[1px] bg-zinc-400 mb-0"></div>
+
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_2.5fr] gap-x-12">
+            
+            <div className="hidden md:block"></div>
+
+            <div className="flex flex-col">
+              {PROCESS_STEPS.map((step) => {
+                const isOpen = openSteps.includes(step.number);
+                return (
+                  <div 
+                    key={step.number} 
+                    onClick={() => toggleStep(step.number)}
+                    className="group relative flex flex-col pt-12 pb-12 border-b border-zinc-400 cursor-pointer overflow-hidden transition-all duration-500"
+                  >
+                    <div className="flex items-center justify-between w-full relative z-10">
+                      <div className="flex items-center gap-6 md:gap-12">
+                        
+                        {/* Kinetic Infinite-Loop Number Animation */}
+                        <div className="text-xs md:text-sm font-medium text-zinc-500 tabular-nums flex overflow-visible">
+                          {step.number.split('').map((char, i) => (
+                            <div key={i} className="relative overflow-hidden h-[1.2em] flex flex-col leading-none">
+                              <span className={`transition-transform duration-[1000ms] ease-[0.83,0,0.17,1] ${i === 0 ? 'group-hover:-translate-y-[150%]' : 'group-hover:translate-y-[150%]'}`}>
+                                {char}
+                              </span>
+                              <span className={`absolute inset-0 transition-transform duration-[1000ms] ease-[0.83,0,0.17,1] ${i === 0 ? 'translate-y-[150%] group-hover:translate-y-0' : '-translate-y-[150%] group-hover:translate-y-0'}`}>
+                                {char}
+                              </span>
+                            </div>
+                          ))}
                         </div>
-                      ))}
+
+                        {/* Kinetic Infinite-Loop Title Animation */}
+                        <h3 className={`text-4xl sm:text-5xl md:text-6xl font-serif font-normal tracking-tight flex gap-x-3 overflow-visible`}>
+                          {step.title.split(' ').map((word, i) => (
+                            <div key={i} className="relative overflow-hidden h-[1.1em] flex flex-col leading-none">
+                              <span className={`transition-transform duration-[1000ms] ease-[0.83,0,0.17,1] ${i === 0 ? 'group-hover:-translate-y-[150%]' : 'group-hover:translate-y-[150%]'}`}>
+                                {word}
+                              </span>
+                              <span className={`absolute inset-0 transition-transform duration-[1000ms] ease-[0.83,0,0.17,1] ${i === 0 ? 'translate-y-[150%] group-hover:translate-y-0' : '-translate-y-[150%] group-hover:translate-y-0'}`}>
+                                {word}
+                              </span>
+                            </div>
+                          ))}
+                        </h3>
+                      </div>
+                      <div className="relative w-8 h-8 md:w-10 md:h-10 flex items-center justify-center">
+                        <div className={`absolute w-full h-[1px] bg-black transition-opacity duration-300 ${isOpen ? 'opacity-0' : 'opacity-100'}`}></div>
+                        <div className="absolute h-full w-[1px] bg-black"></div>
+                      </div>
+                    </div>
+                    
+                    <div className={`transition-all duration-700 ease-in-out overflow-hidden ${isOpen ? 'max-h-64 opacity-100 mt-6' : 'max-h-0 opacity-0'}`}>
+                      <p className="ml-12 md:ml-24 max-w-xl text-zinc-600 text-lg md:text-xl leading-relaxed pb-6">
+                        {step.description}
+                      </p>
                     </div>
                   </div>
-                </div>
-              </div>
+                );
+              })}
             </div>
-          </section>
-        );
-    }
-  };
-
-  return (
-    <div className="min-h-screen bg-background text-charcoal font-serif selection:bg-accent/20">
-      <Navigation currentView={currentView} onNavigate={handleNavigate} />
-      {renderContent()}
-      <footer id="contact" className="mt-16 pb-12 border-t border-border/30">
-        <div className="max-w-7xl mx-auto px-8 sm:px-12 pt-16">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-10 md:gap-12">
-            <div className="space-y-8 w-full md:w-auto reveal">
-              <h2 className="text-3xl sm:text-5xl font-serif text-charcoal">Let’s chat</h2>
-              <div className="space-y-6">
-                <p className="font-sans text-[10px] uppercase tracking-widest text-muted font-bold">Connect</p>
-                <div className="flex flex-col gap-8">
-                  <a href="mailto:megan.perpich03@gmail.com" className="text-lg sm:text-2xl font-serif text-charcoal hover:text-accent transition-all duration-300 underline underline-offset-8 decoration-border/40 decoration-1">megan.perpich03@gmail.com</a>
-                </div>
-              </div>
-            </div>
-            <div className="text-[9px] font-sans text-muted uppercase tracking-[0.3em] pl-0 md:border-l md:border-border/30 md:pl-8 pb-1 reveal delay-300">© 2026 Megan Perpich</div>
           </div>
         </div>
-      </footer>
+      </section>
+
+      {/* Footer Section - Black background and white text */}
+      <div className={`bg-black transition-opacity duration-1000 ${showContent ? 'opacity-100' : 'opacity-0'}`}>
+        <footer className="px-6 md:px-12 lg:px-24 py-24 flex flex-col md:flex-row justify-between items-center gap-8 text-[10px] font-bold tracking-[0.2em] uppercase text-white">
+          <div className="flex flex-col items-center md:items-start gap-4">
+            <p className="tabular-nums">
+              2026 Megan Perpich
+            </p>
+          </div>
+          
+          <div className="flex gap-12" id="contact">
+            <a href={`mailto:${PROFILE.email}`} className="text-white hover:text-zinc-400 transition-colors tracking-[0.4em]">Email</a>
+            <a href="#" className="text-white hover:text-zinc-400 transition-colors">Privacy</a>
+            <a href="#" className="text-white hover:text-zinc-400 transition-colors">Terms</a>
+          </div>
+        </footer>
+      </div>
     </div>
   );
-}
+};
 
 export default App;
